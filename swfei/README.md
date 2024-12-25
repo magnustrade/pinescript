@@ -102,7 +102,7 @@ Volume-Based Colored Bars add volume analysis to price movements by coloring the
 3. Adjust the settings as per your trading strategy.
 4. Use the buy/sell signals, trend direction, and support/resistance levels to make informed trading decisions.
 
-## Indicator and Operations Explanation
+## Table Explanation
 
 **Indicators**:
 - `infotbl_ok`: Boolean input to enable or disable the info table.
@@ -227,9 +227,9 @@ Hacim Bazlı Renkli Çubuklar, fiyat hareketlerine hacim analizini ekleyerek çu
 3. Ayarları ticaret stratejinize göre ayarlayın.
 4. Al/sat sinyallerini, trend yönünü ve destek/direnç seviyelerini kullanarak bilinçli ticaret kararları verin.
 
-## İndikatör ve İşlemler Açıklaması
+## Tablo Açıklaması
 
-**İndikatörler**:
+**Values**:
 - `infotbl_ok`: Bilgi tablosunu etkinleştirmek veya devre dışı bırakmak için kullanılan boolean girişi.
 - `textColor`: Tabloda gösterilen metin için renk girişi.
 - `isMobile`: Kullanıcının mobil cihazda olup olmadığını kontrol eden boolean girişi.

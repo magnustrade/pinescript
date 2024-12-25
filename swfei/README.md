@@ -124,6 +124,10 @@ Volume-Based Colored Bars add volume analysis to price movements by coloring the
 
 ---
 
+![image](https://github.com/user-attachments/assets/1a7287db-dc74-4a1a-84b9-979844e0b7b9)
+
+---
+
 ### Türkçe
 
 # SuperWaveTrend Fibonacci EMA Ichimoku İndikatörü

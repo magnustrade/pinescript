@@ -102,6 +102,26 @@ Volume-Based Colored Bars add volume analysis to price movements by coloring the
 3. Adjust the settings as per your trading strategy.
 4. Use the buy/sell signals, trend direction, and support/resistance levels to make informed trading decisions.
 
+## Indicator and Operations Explanation
+
+**Indicators**:
+- `infotbl_ok`: Boolean input to enable or disable the info table.
+- `textColor`: Color input for the text displayed in the table.
+- `isMobile`: Boolean input to check if the user is on a mobile device.
+- `showTable`: Boolean input to decide if the desktop table should be displayed.
+- `tablePosition`: String input to set the position of the table on the chart.
+- `tableSize`: String input to set the size of the table.
+
+**Operations**:
+- `emaPeriod1`, `emaPeriod2`, `emaPeriod3`: Integer inputs for the periods of the Exponential Moving Averages.
+- `showEma1`, `showEma2`, `showEma3`: Boolean inputs to show or hide the EMAs.
+- `emaColor1`, `emaColor2`, `emaColor3`: Color inputs for the EMAs.
+- `smaPeriod1`, `smaPeriod2`, `smaPeriod3`: Integer inputs for the periods of the Simple Moving Averages.
+- `showSma1`, `showSma2`, `showSma3`: Boolean inputs to show or hide the SMAs.
+- `smaColor1`, `smaColor2`, `smaColor3`: Color inputs for the SMAs.
+- `openPrice`, `closePrice`, `volumeData`, `changePercent`, `rsi`: Variables to hold the respective data values.
+- `table.cell`: Function to create and populate table cells with the specified data and formatting.
+
 ---
 
 ### Türkçe
@@ -202,6 +222,26 @@ Hacim Bazlı Renkli Çubuklar, fiyat hareketlerine hacim analizini ekleyerek çu
 2. Script'i grafiğinize ekleyin.
 3. Ayarları ticaret stratejinize göre ayarlayın.
 4. Al/sat sinyallerini, trend yönünü ve destek/direnç seviyelerini kullanarak bilinçli ticaret kararları verin.
+
+## İndikatör ve İşlemler Açıklaması
+
+**İndikatörler**:
+- `infotbl_ok`: Bilgi tablosunu etkinleştirmek veya devre dışı bırakmak için kullanılan boolean girişi.
+- `textColor`: Tabloda gösterilen metin için renk girişi.
+- `isMobile`: Kullanıcının mobil cihazda olup olmadığını kontrol eden boolean girişi.
+- `showTable`: Masaüstü tablosunun gösterilip gösterilmeyeceğini belirleyen boolean girişi.
+- `tablePosition`: Tablonun grafikteki konumunu belirlemek için kullanılan string girişi.
+- `tableSize`: Tablonun boyutunu belirlemek için kullanılan string girişi.
+
+**İşlemler**:
+- `emaPeriod1`, `emaPeriod2`, `emaPeriod3`: Üssel Hareketli Ortalamalar için periyotları belirleyen integer girişler.
+- `showEma1`, `showEma2`, `showEma3`: EMA'ların gösterilip gösterilmeyeceğini belirleyen boolean girişler.
+- `emaColor1`, `emaColor2`, `emaColor3`: EMA'lar için renk girişleri.
+- `smaPeriod1`, `smaPeriod2`, `smaPeriod3`: Basit Hareketli Ortalamalar için periyotları belirleyen integer girişler.
+- `showSma1`, `showSma2`, `showSma3`: SMA'ların gösterilip gösterilmeyeceğini belirleyen boolean girişler.
+- `smaColor1`, `smaColor2`, `smaColor3`: SMA'lar için renk girişleri.
+- `openPrice`, `closePrice`, `volumeData`, `changePercent`, `rsi`: İlgili veri değerlerini tutmak için kullanılan değişkenler.
+- `table.cell`: Belirtilen veri ve formatla tablo hücreleri oluşturmak ve doldurmak için kullanılan fonksiyon.
 
 ---
 

@@ -39,7 +39,7 @@ trend := trend == -1 and close > dn1 ? 1 : trend == 1 and close < up1 ? -1 : tre
 
 // Plot SuperTrend
 upPlot = plot(super_ok and trend == 1 ? up : na, title = 'Up Trend', style = plot.style_linebr, linewidth = 2, color = color.green)
-dnPlot = plot(super_ok and trend == -1 ? dn : na, title = 'Down Trend', style = plot.style_linebr, linewidth = 2, color = color.red)
+//dnPlot = plot(super_ok and trend == -1 ? dn : na, title = 'Down Trend', style = plot.style_linebr, linewidth = 2, color = color.red)
 buySignal = trend == 1 and trend[1] == -1
 sellSignal = trend == -1 and trend[1] == 1
 plotshape(super_ok and showBuySignal and buySignal ? up : na, title = 'UpTrend Begins', location = location.absolute, style = shape.circle, size = size.tiny, color = color.green)
@@ -168,23 +168,29 @@ ema4Show = input.bool(defval = true, group = 'MA', inline = 'E4', title = '')
 ema8 = ta.ema(close, ema1)
 ema22 = ta.ema(close, ema2)
 ema55 = ta.ema(close, ema3)
-ema200 = ta.ema(close, ema4)
+ema200x = ta.ema(close, ema4)
+
+// Colors from Slack logo
+color_ema8 = color.new(#36C5F0, 0)   // Blue
+color_ema22 = color.new(#2EB67D, 0)  // Green
+color_ema55 = color.new(#E01E5A, 0)  // Red
+color_ema200 = color.new(#ECB22E, 0) // Yellow
 
 // Plot EMAs
-// plot(ema1Show ? ema8 : na, title = 'EMA 8', color = color.blue, linewidth = 2)
-// plot(ema2Show ? ema22 : na, title = 'EMA 22', color = color.red, linewidth = 2)
-// plot(ema3Show ? ema55 : na, title = 'EMA 55', color = color.green, linewidth = 2)
-plot(ema4Show ? ema200 : na, title = 'EMA 200', color = color.yellow, linewidth = 4)
+plot(ema1Show ? ema8 : na, color = color_ema8, linewidth = 5)
+plot(ema2Show ? ema22 : na, color = color_ema22, linewidth = 1)
+plot(ema3Show ? ema55 : na,  color = color_ema55, linewidth = 1)
+plot(ema4Show ? ema200x : na, color = color_ema200, linewidth = 4)
 
 // Display EMA 200 Value
 if ema_ok and ema4Show and barstate.islast
-    var label_id_200 = label.new(bar_index, na, "", xloc.bar_index, yloc.price, color.blue, label.style_label_left, color.white, size.normal, text.align_left)
-    label.set_xy(label_id_200, bar_index, ema200)
-    label.set_text(label_id_200, "EMA 200: " + str.tostring(ema200, format.mintick))
+    var label_id_200 = label.new(bar_index, na, "", xloc.bar_index, yloc.price, color_ema200)
+    label.set_xy(label_id_200, bar_index, ema200x)
+    label.set_text(label_id_200, "EMA 200: " + str.tostring(ema200x, format.mintick))
 
 // Display Other EMA Values
-if ema_ok and ema1Show and barstate.islast
-    var label_id = label.new(bar_index, na, "", xloc.bar_index, yloc.price, color.blue, label.style_label_left, color.white, size.normal, text.align_left)
+if ema_ok and (ema1Show or ema2Show or ema3Show) and barstate.islast
+    var label_id = label.new(bar_index, na, "", xloc.bar_index, yloc.price, #2EB67D)
     ema_text = (ema3Show ? "EMA " + str.tostring(ema3) + ": " + str.tostring(math.round_to_mintick(ema55)) + "\n" : "") +
                (ema2Show ? "EMA " + str.tostring(ema2) + ": " + str.tostring(math.round_to_mintick(ema22)) + "\n" : "") +
                (ema1Show ? "EMA " + str.tostring(ema1) + ": " + str.tostring(math.round_to_mintick(ema8)) + "" : "")
@@ -204,17 +210,66 @@ basePeriods = input.int(26, minval = 1, title = 'Base Line Length', group = 'ICH
 laggingSpan2Periods = input.int(52, minval = 1, title = 'Leading Span B Length', group = 'ICHIMOKU')
 displacement = input.int(26, minval = 1, title = 'Lagging Span', group = 'ICHIMOKU')
 
-// Ichimoku Calculation
+// Calculation
 donchian(len) => math.avg(ta.lowest(len), ta.highest(len))
 leadLine1 = math.avg(donchian(conversionPeriods), donchian(basePeriods))
+baseLine = donchian(basePeriods)
 leadLine2 = donchian(laggingSpan2Periods)
+plot(ichShow ? baseLine : na, color = #B71C1C, title = 'Base Line', display = display.none)
+plot(ichShow ? close : na, offset = -displacement + 1, color = #43A047, title = 'Lagging Span', display = display.none)
 p1i = plot(ichimoku_ok and ichShow ? leadLine1 : na, offset = displacement - 1, color = #A5D6A7, title = 'Leading Span A')
 p2i = plot(ichimoku_ok and ichShow ? leadLine2 : na, offset = displacement - 1, color = #EF9A9A, title = 'Leading Span B')
-fill(p1i, p2i, color = leadLine1 > leadLine2 ? color.rgb(67, 160, 71, ichimoku_ok and ichShow ? 90 : 0) : color.rgb(244, 67, 54, ichimoku_ok and ichShow ? 90 : 0))
+fill(p1i, p2i, color = leadLine1 > leadLine2 ? color.rgb(67, 160, 71, ichShow ? 90 : 0) : color.rgb(244, 67, 54, ichShow ? 90 : 0))
+
 //-----------------------------------------------------------------------------}
 
 //-----------------------------------------------------------------------------{
-//5- VOLUME BASED BARS
+//5- BOLLINGER BANDS
+////////////////////////
+bbShow_ok = input.bool(false, title = '═══════════════ Bollinger Bands Settings')
+
+lengthBB = input.int(20, minval = 1, group = 'BB', inline = 'BB')
+maType = input.string('SMA', 'Basis MA Type', options = ['SMA', 'EMA', 'SMMA (RMA)', 'WMA', 'VWMA'], group = 'BB')
+src = input(close, title = 'Source', group = 'BB')
+mult = input.float(2.0, minval = 0.001, maxval = 50, title = 'StdDev', group = 'BB')
+
+ma(source, lengthBB, _type) =>
+    switch _type
+        'SMA' => ta.sma(source, lengthBB)
+        'EMA' => ta.ema(source, lengthBB)
+        'SMMA (RMA)' => ta.rma(source, lengthBB)
+        'WMA' => ta.wma(source, lengthBB)
+        'VWMA' => ta.vwma(source, lengthBB)
+
+basis = ma(src, lengthBB, maType)
+dev = mult * ta.stdev(src, lengthBB)
+upper = basis + dev
+lower = basis - dev
+offset = input.int(0, 'Offset', minval = -500, maxval = 500, group = 'BB')
+plot(bbShow_ok ? basis : na, 'Basis', color = #FF6D00, offset = offset)
+p1 = plot(bbShow_ok ? upper : na, 'Upper', color = #2962FF, offset = offset)
+p2 = plot(bbShow_ok ? lower : na, 'Lower', color = #2962FF, offset = offset)
+
+fill(p1, p2, title = 'Background', color = bbShow_ok ? color.rgb(33, 150, 243, 90) : na)
+
+//-----------------------------------------------------------------------------}
+
+//-----------------------------------------------------------------------------{
+//5- PARABOLIC SAR
+////////////////////////
+sarShow_ok = input.bool(false, title = '═══════════════ Parabolic SAR Settings')
+
+start = input(0.02, group = 'P.SAR', inline = 'SAR')
+increment = input(0.02, group = 'P.SAR')
+maximum = input(0.2, 'Max Value', group = 'P.SAR')
+out = ta.sar(start, increment, maximum)
+plot(sarShow_ok ? out : na, 'ParabolicSAR', style = plot.style_cross, color = #2962FF)
+
+//-----------------------------------------------------------------------------}
+
+
+//-----------------------------------------------------------------------------{
+//6- VOLUME BASED BARS
 ////////////////////////
 vbcb_ok = input.bool(true, title = '═══════════════ Volume Based Coloured Bars Settings')
 vbcb_length = input.int(21, 'Volume Based Bars Length', minval = 1)
@@ -241,3 +296,161 @@ vbcb_VolColor = vbcb_vold1 ? vbcb_cold1 : vbcb_vold2 ? vbcb_cold2 : vbcb_vold3 ?
 barcolor(vbcb_ok ? vbcb_VolColor : na, title = 'Volume Based Coloured Bars')
 //-----------------------------------------------------------------------------}
 
+//-----------------------------------------------------------------------------{
+//6- PRICE TABLE
+////////////////////////
+infotbl_ok = input.bool(true, title = '═══════════════ Info Table Settings')
+// Input options for various settings
+textColor = input.color(defval = color.black, title = 'Text Color')
+
+isMobile = input.bool(true, 'Is mobile?')
+showTable = input.bool(false, 'Show Desktop Table?')
+tablePosition = input.string(defval = 'Top Right', title = 'Table Position', options = ['Top Right', 'Bottom Right', 'Middle Right', 'Bottom Center', 'Bottom Left'])
+tableSize = input.string(defval = 'Small', title = 'Table Size', options = ['Small', 'Large', 'Medium'])
+
+// Determine the position of the table
+position = switch tablePosition
+    'Top Right' => position.top_right
+    'Bottom Right' => position.bottom_right
+    'Middle Right' => position.middle_right
+    'Bottom Center' => position.bottom_center
+    'Bottom Left' => position.bottom_left
+
+size = switch tableSize
+    'Small' => size.small
+    'Large' => size.large
+    'Medium' => size.normal
+
+var table mobileTable = table.new(position.bottom_right, 2, 6, border_width = 4, border_color = color.gray, frame_color = color.gray, frame_width = 4)
+var table desktopTable = table.new(position, 6, 6, border_width = 4, border_color = color.gray, frame_color = color.gray, frame_width = 4)
+
+// Input options for moving averages
+emaPeriod1 = input.int(defval = 50, title = 'EMA 1', group = 'MA', inline = 'E1')
+showEma1 = input.bool(defval = false, group = 'MA', inline = 'E1', title = '')
+emaColor1 = input.color(defval = color.black, title = 'EMA1 COLOR', group = 'MA')
+
+emaPeriod2 = input.int(defval = 100, title = 'EMA 2', group = 'MA', inline = 'E23')
+showEma2 = input.bool(defval = false, group = 'MA', inline = 'E2', title = '')
+emaColor2 = input.color(defval = color.black, title = 'EMA2 COLOR', group = 'MA')
+
+emaPeriod3 = input.int(defval = 200, title = 'EMA 3', group = 'MA', inline = 'E3')
+showEma3 = input.bool(defval = false, group = 'MA', inline = 'E3', title = '')
+emaColor3 = input.color(defval = color.black, title = 'EMA3 COLOR', group = 'MA')
+
+smaPeriod1 = input.int(defval = 50, title = 'SMA 1', group = 'MA', inline = 'S1')
+showSma1 = input.bool(defval = false, group = 'MA', inline = 'S1', title = '')
+smaColor1 = input.color(defval = color.black, title = 'SMA1 COLOR', group = 'MA')
+
+smaPeriod2 = input.int(defval = 100, title = 'SMA 2', group = 'MA', inline = 'S2')
+showSma2 = input.bool(defval = false, group = 'MA', inline = 'S2', title = '')
+smaColor2 = input.color(defval = color.black, title = 'SMA2 COLOR', group = 'MA')
+
+smaPeriod3 = input.int(defval = 200, title = 'SMA 3', group = 'MA', inline = 'S3')
+showSma3 = input.bool(defval = false, group = 'MA', inline = 'S3', title = '')
+smaColor3 = input.color(defval = color.black, title = 'SMA3 COLOR', group = 'MA')
+
+// Calculate the moving averages
+ema50 = ta.ema(close, emaPeriod1)
+ema100 = ta.ema(close, emaPeriod2)
+ema200 = ta.ema(close, emaPeriod3)
+sma50 = ta.sma(close, smaPeriod1)
+sma100 = ta.sma(close, smaPeriod2)
+sma200 = ta.sma(close, smaPeriod3)
+
+// Plot the moving averages
+plot(showEma1 ? ema50 : na, color = emaColor1, title = 'EMA1')
+plot(showEma2 ? ema100 : na, color = emaColor2, title = 'EMA2')
+plot(showEma3 ? ema200 : na, color = emaColor3, title = 'EMA3')
+plot(showSma1 ? sma50 : na, color = smaColor1, title = 'SMA1')
+plot(showSma2 ? sma100 : na, color = smaColor2, title = 'SMA2')
+plot(showSma3 ? sma200 : na, color = smaColor3, title = 'SMA3')
+
+// Variables for table data
+openPrice = open
+closePrice = close
+volumeData = volume
+changePercent = ta.change(close) / close[1] * 100
+rsi = ta.rsi(close, 14)
+
+// Display desktop table
+if barstate.islast and isMobile == false and showTable and infotbl_ok
+    header1 = 'Open Price'
+    header2 = 'Close Price'
+    header3 = 'Change Percent'
+    header4 = 'RSI'
+    header5 = 'ATR'
+    header6 = 'Volume'
+
+    smaLabel1 = 'SMA' + str.tostring(smaPeriod1)
+    smaLabel2 = 'SMA' + str.tostring(smaPeriod2)
+    smaLabel3 = 'SMA' + str.tostring(smaPeriod3)
+    emaLabel1 = 'EMA' + str.tostring(emaPeriod1)
+    emaLabel2 = 'EMA' + str.tostring(emaPeriod2)
+    emaLabel3 = 'EMA' + str.tostring(emaPeriod3)
+    smaValue1 = str.tostring(math.round_to_mintick(sma50))
+    smaValue2 = str.tostring(math.round_to_mintick(sma100))
+    smaValue3 = str.tostring(math.round_to_mintick(sma200))
+    emaValue1 = str.tostring(math.round_to_mintick(ema50))
+    emaValue2 = str.tostring(math.round_to_mintick(ema100))
+    emaValue3 = str.tostring(math.round_to_mintick(ema200))
+    openValue = str.tostring(openPrice)
+    closeValue = str.tostring(closePrice)
+    changeValue = str.tostring(math.round_to_mintick(changePercent)) + ' %'
+    rsiValue = str.tostring(math.round_to_mintick(rsi))
+    atrValue = str.tostring(math.round_to_mintick(atr))
+    volumeValue = str.tostring(volumeData)
+
+    table.cell(desktopTable, 0, 0, bgcolor = color.black, text_color = color.white, text = header1, text_size = size)
+    table.cell(desktopTable, 1, 0, bgcolor = color.black, text_color = color.white, text = header2, text_size = size)
+    table.cell(desktopTable, 2, 0, bgcolor = color.black, text_color = color.white, text = header3, text_size = size)
+    table.cell(desktopTable, 3, 0, bgcolor = color.black, text_color = color.white, text = header4, text_size = size)
+    table.cell(desktopTable, 4, 0, bgcolor = color.black, text_color = color.white, text = header5, text_size = size)
+    table.cell(desktopTable, 5, 0, bgcolor = color.black, text_color = color.white, text = header6, text_size = size)
+    table.cell(desktopTable, 0, 1, bgcolor = color.black, text_color = color.white, text = openValue, text_size = size)
+    table.cell(desktopTable, 1, 1, bgcolor = color.black, text_color = color.white, text = closeValue, text_size = size)
+    table.cell(desktopTable, 2, 1, bgcolor = changePercent > 0 ? color.green : color.red, text_color = color.white, text = changeValue, text_size = size)
+    table.cell(desktopTable, 3, 1, bgcolor = rsi > 70 ? color.green : rsi < 30 ? color.red : color.teal, text_color = color.white, text = rsiValue, text_size = size)
+    table.cell(desktopTable, 4, 1, bgcolor = color.black, text_color = color.white, text = atrValue, text_size = size)
+    table.cell(desktopTable, 5, 1, bgcolor = color.black, text_color = color.white, text = volumeValue, text_size = size)
+    table.cell(desktopTable, 0, 2, bgcolor = color.gray, text_color = color.white, text = smaLabel1, text_size = size)
+    table.cell(desktopTable, 1, 2, bgcolor = color.gray, text_color = color.white, text = smaLabel2, text_size = size)
+    table.cell(desktopTable, 2, 2, bgcolor = color.gray, text_color = color.white, text = smaLabel3, text_size = size)
+    table.cell(desktopTable, 3, 2, bgcolor = color.gray, text_color = color.white, text = emaLabel1, text_size = size)
+    table.cell(desktopTable, 4, 2, bgcolor = color.gray, text_color = color.white, text = emaLabel2, text_size = size)
+    table.cell(desktopTable, 5, 2, bgcolor = color.gray, text_color = color.white, text = emaLabel3, text_size = size)
+    table.cell(desktopTable, 0, 3, bgcolor = sma50 > close ? color.red : color.green, text_color = color.white, text = smaValue1, text_size = size)
+    table.cell(desktopTable, 1, 3, bgcolor = sma100 > close ? color.red : color.green, text_color = color.white, text = smaValue2, text_size = size)
+    table.cell(desktopTable, 2, 3, bgcolor = sma200 > close ? color.red : color.green, text_color = color.white, text = smaValue3, text_size = size)
+    table.cell(desktopTable, 3, 3, bgcolor = ema50 > close ? color.red : color.green, text_color = color.white, text = emaValue1, text_size = size)
+    table.cell(desktopTable, 4, 3, bgcolor = ema100 > close ? color.red : color.green, text_color = color.white, text = emaValue2, text_size = size)
+    table.cell(desktopTable, 5, 3, bgcolor = ema200 > close ? color.red : color.green, text_color = color.white, text = emaValue3, text_size = size)
+
+// Display mobile table
+if barstate.islast and isMobile == true and showTable == false and infotbl_ok
+    header1 = 'Open Price'
+    header2 = 'Close Price'
+    header3 = 'Change Percent'
+    header4 = 'RSI'
+    header5 = 'ATR'
+    header6 = 'Volume'
+    openValue = str.tostring(openPrice)
+    closeValue = str.tostring(closePrice)
+    changeValue = str.tostring(math.round_to_mintick(changePercent)) + ' %'
+    rsiValue = str.tostring(math.round_to_mintick(rsi))
+    atrValue = str.tostring(math.round_to_mintick(atr))
+    volumeValue = str.tostring(volumeData)
+
+    table.cell(mobileTable, 0, 0, bgcolor = color.black, text_color = color.white, text = header1, text_size = size)
+    table.cell(mobileTable, 0, 1, bgcolor = color.black, text_color = color.white, text = header2, text_size = size)
+    table.cell(mobileTable, 0, 2, bgcolor = color.black, text_color = color.white, text = header3, text_size = size)
+    table.cell(mobileTable, 0, 3, bgcolor = color.black, text_color = color.white, text = header4, text_size = size)
+    table.cell(mobileTable, 0, 4, bgcolor = color.black, text_color = color.white, text = header5, text_size = size)
+    table.cell(mobileTable, 0, 5, bgcolor = color.black, text_color = color.white, text = header6, text_size = size)
+
+    table.cell(mobileTable, 1, 0, bgcolor = color.black, text_color = color.white, text = openValue, text_size = size)
+    table.cell(mobileTable, 1, 1, bgcolor = color.black, text_color = color.white, text = closeValue, text_size = size)
+    table.cell(mobileTable, 1, 2, bgcolor = color.black, text_color = color.white, text = changeValue, text_size = size)
+    table.cell(mobileTable, 1, 3, bgcolor = rsi > 70 ? color.green : rsi < 30 ? color.red : color.teal, text_color = color.white, text = rsiValue, text_size = size)
+    table.cell(mobileTable, 1, 4, bgcolor = color.black, text_color = color.white, text = atrValue, text_size = size)
+    table.cell(mobileTable, 1, 5, bgcolor = color.black, text_color = color.white, text = volumeValue, text_size = size)
+//-----------------------------------------------------------------------------}

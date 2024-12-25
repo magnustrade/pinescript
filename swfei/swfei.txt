@@ -298,6 +298,7 @@ barcolor(vbcb_ok ? vbcb_VolColor : na, title = 'Volume Based Coloured Bars')
 
 //-----------------------------------------------------------------------------{
 //6- PRICE TABLE
+//# * Author      : © only_fibonacci, modified by © therkut
 ////////////////////////
 infotbl_ok = input.bool(true, title = '═══════════════ Info Table Settings')
 // Input options for various settings

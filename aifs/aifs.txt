@@ -158,8 +158,8 @@ ema_ok = input(false, title = '═══════════════ EMA
 ema1 = input.int(defval=8, title='EMA 1', group='MA', inline='E1')
 ema1Show = input.bool(defval=true, group='MA', inline='E1', title='')
 
-ema2 = input.int(defval=22, title='EMA 2', group='MA', inline='E23')
-ema2Show = input.bool(defval=true, group='MA', inline='E23', title='')
+ema2 = input.int(defval=22, title='EMA 2', group='MA', inline='E2')
+ema2Show = input.bool(defval=true, group='MA', inline='E2', title='')
 
 ema3 = input.int(defval=55, title='EMA 3', group='MA', inline='E3')
 ema3Show = input.bool(defval=true, group='MA', inline='E3', title='')
@@ -308,29 +308,29 @@ var table mobileTable = table.new(position.bottom_right, 2, 9, border_width = 4,
 var table desktopTable = table.new(position, 6, 6, border_width = 4, border_color = color.gray, frame_color = color.gray, frame_width = 4)
 
 // Input options for moving averages
-emaPeriod1 = input.int(defval = 8, title = 'EMA 1', group = 'MA', inline = 'E1')
+emaPeriod1 = input.int(defval = 50, title = 'EMA 1', group = 'MA', inline = 'E1')
 showEma1 = input.bool(defval = false, group = 'MA', inline = 'E1', title = '')
-emaColor1 = input.color(defval = color.black, title = 'EMA1 COLOR', group = 'MA', display = display.none)
+emaColor1 = input.color(defval = color.black, title = 'EMA1 COLOR', group = 'MA', inline = 'E6')
 
-emaPeriod2 = input.int(defval = 22, title = 'EMA 2', group = 'MA', inline = 'E23')
+emaPeriod2 = input.int(defval = 100, title = 'EMA 2', group = 'MA', inline = 'E2')
 showEma2 = input.bool(defval = false, group = 'MA', inline = 'E2', title = '')
-emaColor2 = input.color(defval = color.black, title = 'EMA2 COLOR', group = 'MA', display = display.none)
+emaColor2 = input.color(defval = color.black, title = 'EMA2 COLOR', group = 'MA', inline = 'E6')
 
-emaPeriod3 = input.int(defval = 55, title = 'EMA 3', group = 'MA', inline = 'E3')
+emaPeriod3 = input.int(defval = 200, title = 'EMA 3', group = 'MA', inline = 'E3')
 showEma3 = input.bool(defval = false, group = 'MA', inline = 'E3', title = '')
-emaColor3 = input.color(defval = color.black, title = 'EMA3 COLOR', group = 'MA', display = display.none)
+emaColor3 = input.color(defval = color.black, title = 'EMA3 COLOR', group = 'MA', inline = 'E6')
 
-smaPeriod1 = input.int(defval = 50, title = 'SMA 1', group = 'MA', inline = 'S1')
-showSma1 = input.bool(defval = false, group = 'MA', inline = 'S1', title = '')
-smaColor1 = input.color(defval = color.black, title = 'SMA1 COLOR', group = 'MA', display = display.none)
+smaPeriod1 = input.int(defval = 50, title = 'SMA 1', group = 'MA', inline = 'E4')
+showSma1 = input.bool(defval = false, group = 'MA', inline = 'E4', title = '')
+smaColor1 = input.color(defval = color.black, title = 'SMA1 COLOR', group = 'MA', inline = 'E6')
 
-smaPeriod2 = input.int(defval = 100, title = 'SMA 2', group = 'MA', inline = 'S2')
-showSma2 = input.bool(defval = false, group = 'MA', inline = 'S2', title = '')
-smaColor2 = input.color(defval = color.black, title = 'SMA2 COLOR', group = 'MA', display = display.none)
+smaPeriod2 = input.int(defval = 100, title = 'SMA 2', group = 'MA', inline = 'E4')
+showSma2 = input.bool(defval = false, group = 'MA', inline = 'E4', title = '')
+smaColor2 = input.color(defval = color.black, title = 'SMA2 COLOR', group = 'MA', inline = 'E6')
 
-smaPeriod3 = input.int(defval = 200, title = 'SMA 3', group = 'MA', inline = 'S3')
-showSma3 = input.bool(defval = false, group = 'MA', inline = 'S3', title = '')
-smaColor3 = input.color(defval = color.black, title = 'SMA3 COLOR', group = 'MA', display = display.none)
+smaPeriod3 = input.int(defval = 200, title = 'SMA 3', group = 'MA', inline = 'E4')
+showSma3 = input.bool(defval = false, group = 'MA', inline = 'E4', title = '')
+smaColor3 = input.color(defval = color.black, title = 'SMA3 COLOR', group = 'MA', inline = 'E6')
 
 // Calculate the moving averages
 ema50 = ta.ema(close, emaPeriod1)
@@ -435,9 +435,9 @@ if barstate.islast and isMobile == true and showTable == false and infotbl_ok
     table.cell(mobileTable, 0, 3, bgcolor = color.black, text_color = color.white, text = header4, text_size = sizeTbl)
     table.cell(mobileTable, 0, 4, bgcolor = color.black, text_color = color.white, text = header5, text_size = sizeTbl)
     table.cell(mobileTable, 0, 5, bgcolor = color.black, text_color = color.white, text = header6, text_size = sizeTbl)
-    table.cell(mobileTable, 0, 6, bgcolor = color.black, text_color = color.white, text = emaLabel1, text_size = sizeTbl)
-    table.cell(mobileTable, 0, 7, bgcolor = color.black, text_color = color.white, text = emaLabel2, text_size = sizeTbl)
-    table.cell(mobileTable, 0, 8, bgcolor = color.black, text_color = color.white, text = emaLabel3, text_size = sizeTbl)
+    // table.cell(mobileTable, 0, 6, bgcolor = color.black, text_color = color.white, text = emaLabel1, text_size = sizeTbl)
+    // table.cell(mobileTable, 0, 7, bgcolor = color.black, text_color = color.white, text = emaLabel2, text_size = sizeTbl)
+    // table.cell(mobileTable, 0, 8, bgcolor = color.black, text_color = color.white, text = emaLabel3, text_size = sizeTbl)
 
     table.cell(mobileTable, 1, 0, bgcolor = color.black, text_color = color.white, text = openValue, text_size = sizeTbl)
     table.cell(mobileTable, 1, 1, bgcolor = color.black, text_color = color.white, text = closeValue, text_size = sizeTbl)
@@ -445,9 +445,10 @@ if barstate.islast and isMobile == true and showTable == false and infotbl_ok
     table.cell(mobileTable, 1, 3, bgcolor = rsi > 70 ? color.green : rsi < 30 ? color.red : color.teal, text_color = color.white, text = rsiValue, text_size = sizeTbl)
     table.cell(mobileTable, 1, 4, bgcolor = color.black, text_color = color.white, text = atrValue, text_size = sizeTbl)
     table.cell(mobileTable, 1, 5, bgcolor = color.black, text_color = color.white, text = volumeValue, text_size = sizeTbl)
-    table.cell(mobileTable, 1, 6, bgcolor = ema50 > close ? color.red : color.green, text_color = color.white, text = emaValue1, text_size = sizeTbl)
-    table.cell(mobileTable, 1, 7, bgcolor = ema100 > close ? color.red : color.green, text_color = color.white, text = emaValue2, text_size = sizeTbl)
-    table.cell(mobileTable, 1, 8, bgcolor = ema200 > close ? color.red : color.green, text_color = color.white, text = emaValue3, text_size = sizeTbl)
+
+    // table.cell(mobileTable, 1, 6, bgcolor = ema50 > close ? color.red : color.green, text_color = color.white, text = emaValue1, text_size = sizeTbl)
+    // table.cell(mobileTable, 1, 7, bgcolor = ema100 > close ? color.red : color.green, text_color = color.white, text = emaValue2, text_size = sizeTbl)
+    // table.cell(mobileTable, 1, 8, bgcolor = ema200 > close ? color.red : color.green, text_color = color.white, text = emaValue3, text_size = sizeTbl)
 
 //-----------------------------------------------------------------------------}
 
@@ -1292,7 +1293,7 @@ fill(kumoFast, kumoSlow, color = kumoColor, title = 'Kumo')
 // 9- AR FORECAST
 // * Author      : © Steversteves
 ////////////////////////
-arforecast_ok = input.bool(true, title = '═══════════════ Forecast Scatterplot Settings')
+arforecast_ok = input.bool(false, title = '═══════════════ Forecast Scatterplot Settings')
 
 
 import Steversteves/SPTS_StatsPakLib/1 as spts
@@ -1524,10 +1525,10 @@ int lineWidth = input.int(1, 'Line Width:', group = group1, inline = group1)
 string midLineStyle = input.string('Dashed', '', group = group1, inline = group1, options = ['Dotted', 'Solid', 'Dashed'])
 
 string group2 = 'TABLE SETTINGS'
-bool showAutoSelectedPeriod = input(true, 'Show Auto-Selected Period', group = group2, tooltip = tlp2)
-bool showTrendStrength = input(true, 'Show Trend Strength', group = group2, inline = 'secondLine')
+bool showAutoSelectedPeriod = input(false, 'Show Auto-Selected Period', group = group2, tooltip = tlp2)
+bool showTrendStrength = input(false, 'Show Trend Strength', group = group2, inline = 'secondLine')
 bool showPearsonInput = input.bool(false, 'Show Pearson\'s R', group = group2, inline = 'secondLine', tooltip = tlp3)
-bool showTrendAnnualizedReturn = input(true, 'Show Trend Annualized Return', group = group2, tooltip = tlp4)
+bool showTrendAnnualizedReturn = input(false, 'Show Trend Annualized Return', group = group2, tooltip = tlp4)
 string tablePositionInput = input.string('Bottom Center', 'Table Position', options = ['Bottom Right', 'Bottom Left', 'Middle Right', 'Middle Left', 'Top Right', 'Top Left', 'Top Center', 'Bottom Center'], group = group2, inline = 'fourthLine')
 string textSizeInput = input.string('Normal', 'Text Size', options = ['Normal', 'Large', 'Small'], group = group2, inline = 'fourthLine')
 
